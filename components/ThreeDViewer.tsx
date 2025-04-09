@@ -1,10 +1,17 @@
 "use client";
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThemeToggle from "./ThemeToggle";
 import ViewerTab from "./ViewerTab";
 import InputTab from "./InputTab";
+import { OctagonXIcon, Settings2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "./ui/button";
 
 export default function ThreeDViewer() {
   const [modelUrl, setModelUrl] = useState("");
@@ -14,6 +21,7 @@ export default function ThreeDViewer() {
   const [environment, setEnvironment] = useState<
     "studio" | "sunset" | "dawn" | "night"
   >("studio");
+  const [toolsExpanded, setToolsExpanded] = useState(true);
 
   const onFileLoaded = (url: string, type: "fbx" | "gltf") => {
     setModelUrl(url);
@@ -36,6 +44,10 @@ export default function ThreeDViewer() {
     setActiveTab("input");
   };
 
+  const toggleTools = () => {
+    setToolsExpanded(!toolsExpanded);
+  };
+
   return (
     <div className="w-full h-screen">
       <Tabs
@@ -54,21 +66,45 @@ export default function ThreeDViewer() {
                 View
               </TabsTrigger>
             </TabsList>
+            <ThemeToggle />
             {modelUrl && (
               <div className="flex gap-2">
-                <button
-                  onClick={resetModel}
-                  title="Reset"
-                  className="p-2 border rounded"
-                >
-                  Reset
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={resetModel}
+                      >
+                        <OctagonXIcon className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Reset Model</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={toggleTools}
+                      >
+                        <Settings2 className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{toolsExpanded ? "Hide Tools" : "Show Tools"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             )}
-            <ThemeToggle />
           </div>
         </div>
-
         <TabsContent
           value="input"
           className="h-full flex items-center justify-center p-6"
@@ -79,7 +115,6 @@ export default function ThreeDViewer() {
             setLoading={setIsLoading}
           />
         </TabsContent>
-
         <TabsContent value="view" className="h-full">
           <ViewerTab
             modelUrl={modelUrl}
@@ -87,6 +122,7 @@ export default function ThreeDViewer() {
             environment={environment}
             setEnvironment={setEnvironment}
             isLoading={isLoading}
+            toolsExpanded={toolsExpanded}
           />
         </TabsContent>
       </Tabs>

@@ -20,7 +20,7 @@ export default function SceneEnvironment({
       ) : (
         <>
           <Environment preset={environment} />
-          <ambientLight intensity={environment === "night" ? 0.2 : 0.5} />
+          <ambientLight intensity={environment === "night" ? 0.1 : 1} />
           <directionalLight
             position={[10, 10, 5]}
             intensity={
@@ -30,7 +30,7 @@ export default function SceneEnvironment({
               environment === "sunset"
                 ? "#ff7e5f"
                 : environment === "dawn"
-                ? "#b7c9e2"
+                ? "#b7a912"
                 : environment === "night"
                 ? "#b4c2d3"
                 : "#ffffff"
